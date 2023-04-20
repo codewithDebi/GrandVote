@@ -41,6 +41,8 @@ contract Vote {
     }
 
     mapping(uint256 => Contestant) public contestants;
+    mapping(uint256 => bool) usedContestantIds;
+
     Contestant[] private contestantarr;
     Contestant[] public filteredContestants;
     mapping(uint256 => uint256) internal votesCount;
@@ -127,31 +129,38 @@ contract Vote {
     }
 
     function registerContestant(
-        string memory _name,
-        string memory _platform,
-        // uint256 _contestantId,
-        uint256 _stateCode,
-        uint256 _constituencyCode,
-        uint256 _electionID
-    ) public isNotExist onlyregistrar {
-        // Create a new contestant struct
-        contestantID = contestantIndex;
-        Contestant memory newContestant = Contestant(
-            _name,
-            _platform,
-            0,
-            contestantID,
-            _stateCode,
-            _constituencyCode,
-            _electionID
-        );
-        // Assign the struct to the contestants mapping
-        contestants[newContestant.contestantId] = newContestant;
-        // Assign struct to an Array
-        contestantarr.push(newContestant);
-        // Increment counter
-        contestantIndex++;
+    string memory _name,
+    string memory _platform,
+    uint256 _stateCode,
+    uint256 _constituencyCode,
+    uint256 _electionID
+) public isNotExist onlyregistrar {
+    // Check if the election exists
+    require(_electionID < elections.length, "Election does not exist");
+    
+    uint256 newId = 0;
+    while (usedContestantIds[newId]) {
+        newId++;
     }
+    // Create a new contestant struct
+    Contestant memory newContestant = Contestant(
+        _name,
+        _platform,
+        0,
+        newId,
+        _stateCode,
+        _constituencyCode,
+        _electionID
+    );
+    // Assign the struct to the contestants mapping
+    contestants[newContestant.contestantId] = newContestant;
+    // Assign struct to an Array
+    contestantarr.push(newContestant);
+    // Mark the ID as used
+    usedContestantIds[newId] = true;
+    contestantIndex++;
+}
+
 
     function getContestantInfo(uint256 _contestantId)
         public
