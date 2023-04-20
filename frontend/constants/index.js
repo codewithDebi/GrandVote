@@ -1,3 +1,3 @@
 
-export const CONTRACT_ADDRESS = '0xe70a8b3661f5D01687c1783B679e142f89A141FB' //Polygon Mumbai Assesor
+export const CONTRACT_ADDRESS = '0x0dbff8E6C3700f1C7E8eBa54508436056fEf550D' //Polygon Mumbai Assesor
 
